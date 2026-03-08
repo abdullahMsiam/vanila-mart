@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanila Mart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Delius&family=Noto+Serif+Bengali:wght@100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=Tiro+Bangla:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/ea937caef3.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="container mx-auto">
+    <nav id="navbar-container"></nav>
+    <!-- Banner -->
+    <div
+      class="hero max-h-[900px] min-h-[500px]"
+      style="background-image: url(/assets/banner.png)"
+    >
+      <div class="hero-overlay"></div>
+      <div class="text-start md:w-4/5">
+        <div class="text-white mx-11/12 p-5 max-w-2xl">
+          <h1 class="mb-5 text-5xl font-bold">Welcome to Vanila Mart</h1>
+          <p class="mb-5">
+            Your one-stop shop for all your needs. Discover a wide range of
+            products at unbeatable prices. Shop now and experience the best
+            online shopping experience with Vanila Mart!
+          </p>
+          <button class="btn btn-primary">
+            <a href="/products.html">Shop Now</a>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature of the store  -->
+    <div class="my-20 w-11/12 md:w-3/4 mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-10">Why Choose Us?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body items-center text-center">
+            <i class="fa-solid fa-truck-fast text-5xl text-primary"></i>
+            <h2 class="card-title">Fast Delivery</h2>
+            <p>Get your products delivered to your doorstep in no time.</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body items-center text-center">
+            <i class="fa-solid fa-shield-halved text-5xl text-primary"></i>
+            <h2 class="card-title">Secure Payment</h2>
+            <p>
+              Shop with confidence knowing your payment information is safe and
+              secure.
+            </p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body items-center text-center">
+            <i class="fa-solid fa-headset text-5xl text-primary"></i>
+            <h2 class="card-title">24/7 Support</h2>
+            <p>
+              Our dedicated support team is here to assist you with any
+              questions or concerns, anytime.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trending Products -->
+    <div id="trending-product"></div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
