@@ -1,4 +1,6 @@
 console.log("Hello, World! This is a simple JavaScript file.");
+let allProducts = [];
+
 const loadNavbar = () => {
   const navbarHTML = `
     <nav class="navbar bg-red-50 shadow-sm">
@@ -108,91 +110,102 @@ const loadFooter = () => {
   }
 };
 
-// load trending products based on the rating and with the help of the API
-const loadProducts = () => {
-  fetch("https://fakestoreapi.com/products")
-    .then((res) => res.json())
-    .then((data) => {
-      const trendingProducts = data
-        .filter((product) => product.rating.rate >= 4.0)
-        .slice(0, 3);
-      const container = document.getElementById("trending-product");
-      const allProducts = document.getElementById("all-products");
-      const categories = [...new Set(data.map((product) => product.category))];
-      if (container) {
-        let productsHTML = `
-              <h2 class="text-3xl font-bold text-center mb-10">Trending Products</h2>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                ${trendingProducts
-                  .map(
-                    (product) => `
-                  <div class="card bg-base-100 shadow-xl">
-                    <figure>
-                      <img class="h-48 object-contain" src="${product.image}" alt="${product.title}" />
-                    </figure>
-                    <div class="card-body bg-red-50">
-                      <div class="flex justify-between mb-2">
-                      <div class="btn btn-xs btn-secondary rounded-full font-semibold uppercase">${product.category}</div>
-                      <div class="rounded-full font-semibold uppercase"><i class="fa-solid fa-star text-amber-400"></i>${product.rating.rate}(${product.rating.count})</div>
-                      </div>
-                      <h2 class="card-title">${product.title}</h2>
-                      <p>${product.description.slice(0, 100)}...</p>
-                      <p class="text-xl font-bold">$${product.price.toFixed(2)}</p>
-                      <div class="card-actions flex justify-between ">
-                        <button class="flex-1 btn btn-outline btn-sm">Details <i class="fa-solid fa-info-circle"></i></button>
-                        <button class="flex-1 btn btn-primary btn-sm">Cart <i class="fa-solid fa-shopping-cart"></i></button>
-                      </div>
-                    </div>
-                  </div>
-                `,
-                  )
-                  .join("")}
-              </div>
-            `;
-        container.innerHTML = productsHTML;
-      } else if (allProducts) {
-        let productsHTML = `
-              <h2 class="text-3xl font-bold text-center mb-10">Our Products</h2>
-             <div class="flex flex-wrap gap-4 justify-center mb-10">
-              ${categories
-                .map(
-                  (category) => `
-                    <h3 class="text-md font-semibold btn btn-outline btn-secondary btn-xs rounded-full uppercase">${category}</h3>
-                  `,
-                )
-                .join("")}
-             </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                ${data
-                  .map(
-                    (product) => `
-                  <div class="card bg-base-100 shadow-xl">
-                    <figure>
-                      <img class="h-48 object-contain" src="${product.image}" alt="${product.title}" />
-                    </figure>
-                    <div class="card-body bg-red-50">
-                      <div class="flex justify-between mb-2">
-                      <div class="btn btn-xs btn-secondary rounded-full font-semibold uppercase">${product.category}</div>
-                      <div class="rounded-full font-semibold uppercase"><i class="fa-solid fa-star text-amber-400"></i>${product.rating.rate}(${product.rating.count})</div>
-                      </div>
-                      <h2 class="card-title">${product.title}</h2>
-                      <p>${product.description.slice(0, 100)}...</p>
-                      <p class="text-xl font-bold">$${product.price.toFixed(2)}</p>
-                      <div class="card-actions flex justify-between ">
-                        <button class="flex-1 btn btn-outline btn-sm">Details <i class="fa-solid fa-info-circle"></i></button>
-                        <button class="flex-1 btn btn-primary btn-sm">Cart <i class="fa-solid fa-shopping-cart"></i></button>
-                      </div>
-                    </div>
-                  </div>
-                `,
-                  )
-                  .join("")}
-              </div>
-            `;
-        allProducts.innerHTML = productsHTML;
-      }
-    });
+const fetchProducts = async () => {
+  const apiUrl = "https://fakestoreapi.com/products";
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+  allProducts = data;
+  loadProducts(data);
+  loadProductsPage(data);
+  loadCategoryProducts(data);
 };
+
+// product card html
+const productHtml = (product) => `
+  <div class="card bg-base-100 shadow-xl">
+    <figure>
+      <img src="${product.image}" alt="${product.title}" class="h-36 object-contain" />
+    </figure>
+    <div class="card-body">
+    <div class="flex items-center justify-between mb-2">
+    <p class="font-bold btn btn-xs btn-info rounded-full btn-active uppercase w-11">${product.category}</p>
+    <p class="font-bold btn btn-xs bg-none uppercase w-11"><i class="fa-solid fa-star text-yellow-400"></i> ${product.rating.rate}</p>
+    </div>
+      <h2 class="card-title">${product.title}</h2>
+      <p class="hidden md:block">${product.description.slice(0, 100)}...</p>
+      <p class="font-bold text-xl">$${product.price.toFixed(2)}</p>
+      <div class="card-actions flex justify-between mt-4">
+      <button class="btn btn-sm btn-outline"><i class="fa-solid fa-eye"></i> View Details</button>
+        <button class="btn btn-sm btn-primary"> <i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+      </div>
+    </div>
+  </div>
+`;
+
+// load products based on the rating and with the help of the API
+const loadProducts = (products) => {
+  const trendingContainer = document.getElementById("trending-product");
+
+  if (trendingContainer) {
+    const sortedProducts = products.sort(
+      (a, b) => b.rating.rate - a.rating.rate,
+    );
+    const topProducts = sortedProducts.slice(0, 3);
+    const productHTML = topProducts
+      .map((product) => productHtml(product))
+      .join("");
+    trendingContainer.innerHTML = `
+            <h2 class="text-3xl font-bold text-center mb-10">Trending Products</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                ${productHTML}
+            </div>
+        `;
+  }
+};
+
+window.categoryProducts = (category = "All") => {
+  console.log(category);
+
+  if (category === "All") {
+    loadProductsPage(allProducts);
+  } else {
+    const filteredProducts = allProducts.filter(
+      (product) => product.category === category,
+    );
+    loadProductsPage(filteredProducts, category);
+  }
+};
+
+// load category
+const loadCategoryProducts = (products) => {
+  const categoriessContainer = document.getElementById("categories-container");
+  categoriessContainer.innerHTML = "";
+
+  const categories = [...new Set(products.map((product) => product.category))];
+  categories.push("All");
+
+  categoriessContainer.innerHTML = categories
+    .map(
+      (category) =>
+        `<button class="btn btn-sm btn-info btn-outline" onclick="categoryProducts(\`${category}\`)">${category}</button>`,
+    )
+    .join("");
+};
+
+const loadProductsPage = (products, category = "All") => {
+  const productsContainer = document.getElementById("products-container");
+  productsContainer.innerHTML = "";
+
+  const productHTML = products.map((product) => productHtml(product)).join("");
+
+  productsContainer.innerHTML = `
+            <h2 class="text-3xl font-bold text-center mb-10 uppercase">${category === "All" ? "All" : category} Products</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                ${productHTML}
+            </div>
+        `;
+};
+
 loadNavbar();
-loadProducts();
 loadFooter();
+fetchProducts();
