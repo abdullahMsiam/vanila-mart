@@ -60,7 +60,7 @@ const loadNavbar = () => {
     const links = container.querySelectorAll("a");
     links.forEach((link) => {
       if (link.getAttribute("href") === currentPath) {
-        link.classList.add("btn", "btn-sm", "btn-active", "btn-success");
+        link.classList.add("btn", "btn-sm", "btn-active", "btn-primary");
       }
     });
   }
@@ -135,16 +135,53 @@ const productHtml = (product) => `
       <p class="hidden md:block">${product.description.slice(0, 100)}...</p>
       <p class="font-bold text-xl">$${product.price.toFixed(2)}</p>
       <div class="card-actions flex justify-between mt-4">
-      <button class="btn btn-sm btn-outline"><i class="fa-solid fa-eye"></i> View Details</button>
+      <button class="btn btn-sm btn-outline" onclick="openModal(${JSON.stringify(product).replace(/"/g, "&quot;")})"><i class="fa-solid fa-eye"></i> View Details</button>
         <button class="btn btn-sm btn-primary"> <i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
       </div>
     </div>
   </div>
 `;
 
+// modal open function
+window.openModal = (product) => {
+  //   alert("this is a modal");
+  const modalHolder = document.getElementById("trending-product");
+  const modalContainer = document.createElement("div");
+
+  modalContainer.classList.add(
+    "fixed",
+    "inset-0",
+    "bg-black",
+    "bg-opacity-50",
+    "flex",
+    "items-center",
+    "justify-center",
+  );
+  modalContainer.innerHTML = `
+    <div class="bg-red-50 p-5 rounded-lg w-11/12 md:w-1/4 flex flex-col">
+      <h2 class="text-2xl font-bold mb-4"><i class="fa-solid fa-box-open"></i>Details</h2>
+      <p>${product.description}</p>
+      <button class="btn btn-sm btn-outline btn-error mt-4 text-end" onclick="closeModal()"> <i class="fa-solid fa-xmark"></i> Close</button>
+    </div>
+  `;
+  modalHolder.appendChild(modalContainer);
+};
+
+window.closeModal = () => {
+  const modalHolder = document.getElementById(
+    "trending-product" || "products-container",
+  );
+  const modalContainer = modalHolder.querySelector("div.fixed");
+  if (modalContainer) {
+    modalHolder.removeChild(modalContainer);
+  }
+};
+
 // load products based on the rating and with the help of the API
 const loadProducts = (products) => {
-  const trendingContainer = document.getElementById("trending-product");
+  const trendingContainer = document.getElementById(
+    "trending-product" || "products-container",
+  );
 
   if (trendingContainer) {
     const sortedProducts = products.sort(
